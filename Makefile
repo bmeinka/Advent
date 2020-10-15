@@ -13,7 +13,6 @@ include target.mk
 all: $(puzzles)
 
 $(puzzles): bin/%:%.o | $(bin_dir)
-	@echo $(days)
 	$(CC) -o $@ $^
 
 $(bin_dir):
