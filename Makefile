@@ -1,4 +1,4 @@
-llC = clang
+CC = clang
 CFLAGS = --std=c11 -Wall -Wextra -Wpedantic
 
 years =  $(shell seq -w 2015 2020)
