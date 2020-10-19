@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+enum direction {
+	UP = '(',	
+	DOWN = ')'	
+};
+
 int main(void) {
 	int c;
 	int position = 0;
@@ -7,9 +12,9 @@ int main(void) {
 	int step = 0;
 
 	while ((c = getc(stdin)) != EOF) {
-		if (c == '(')
+		if (c == UP)
 			position++;
-		else if (c == ')')
+		else if (c == DOWN)
 			position--;
 		step++;
 		if (basement_step == 0 && position < 0)
