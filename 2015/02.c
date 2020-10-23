@@ -1,6 +1,4 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <core/std.h>
 
 #define min(a, b) a < b ? a : b
 #define max(a, b) a > b ? a : b

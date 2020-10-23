@@ -1,2 +1,4 @@
-add_executable(01 01.c)
-add_executable(02 02.c)
+foreach(day 01 02)
+	add_executable(${day} ${day}.c)
+	target_link_libraries(${day} core)
+endforeach()

@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <core/std.h>
 
 enum direction {
 	UP = '(',	
