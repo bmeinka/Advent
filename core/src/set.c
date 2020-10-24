@@ -1,7 +1,11 @@
 #include <stdlib.h>
 #include <core/set.h>
-#include <core/list.h>
 #include <string.h>
+
+struct set_node {
+	void *item;
+	struct set_node *next;
+};
 
 struct set {
 	size_t item_size;
@@ -9,7 +13,7 @@ struct set {
 	size_t count;
 	HashFn hash;
 	CmpFn cmp;
-	List *buckets;
+	struct set_node **buckets;
 };
 
 static size_t get_bucket_index(Set set, void *item) {
@@ -24,17 +28,17 @@ Set set_create(size_t item_size, HashFn hash, CmpFn cmp) {
 	set->item_size = item_size;
 	set->hash = hash;
 	set->cmp = cmp;
-	set->buckets = calloc(1, sizeof(List));
+	set->buckets = calloc(1, sizeof(struct set_node *));
 	return set;
 }
 
 void set_destroy(Set set) {
 	for (size_t i = 0; i < 1; i++) {
-		List head = set->buckets[i];
+		struct set_node *head = set->buckets[i];
 		while (head) {
 			if (head->item)
 				free(head->item);
-			List next = head->next;
+			struct set_node *next = head->next;
 			free(head);
 			head = next;
 		}
@@ -46,16 +50,16 @@ void set_destroy(Set set) {
 bool set_add(Set set, void *item) {
 	size_t i = get_bucket_index(set, item);
 	if (!set->buckets[i]) {
-		set->buckets[i] = calloc(1, sizeof(struct list_node));
+		set->buckets[i] = calloc(1, sizeof(struct set_node));
 		if (!set->buckets[i])
 			return false;
 	}
-	List head = set->buckets[i];
+	struct set_node *head = set->buckets[i];
 	while (head->item) {
 		if (set->cmp(head->item, item))
 			return true;
 		if (!head->next) {
-			head->next = calloc(1, sizeof(struct list_node));
+			head->next = calloc(1, sizeof(struct set_node));
 			if (!head->next)
 				return false;
 		}
@@ -71,7 +75,7 @@ bool set_add(Set set, void *item) {
 
 bool set_contains(Set set, void *item) {
 	size_t i = get_bucket_index(set, item);
-	List head = set->buckets[i];
+	struct set_node *head = set->buckets[i];
 	while (head && head->item) {
 		if (set->cmp(head->item, item))
 			return true;
