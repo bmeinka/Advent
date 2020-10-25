@@ -1,4 +1,5 @@
 #include "macros.h"
+#include <core/std.h>
 #include <core/set.h>
 
 uint64_t hash_int(void *item) {
@@ -18,9 +19,9 @@ static char *test_set_add_item() {
 	set_add(set, &i);
 	bool contains = set_contains(set, &j);
 
-	set_destroy(set);
-
 	assert(contains, "set does not contain added value");
+
+	set_destroy(set);
 	return NULL;
 }
 
@@ -32,9 +33,9 @@ static char *test_set_does_not_contain() {
 	bool contains = set_contains(set, &i);
 	contains |= set_contains(set, &j);
 
-	set_destroy(set);
-
 	assert(!contains, "empty set contains values");
+
+	set_destroy(set);
 	return NULL;
 }
 
@@ -55,9 +56,22 @@ static char *test_set_add_no_duplicates() {
 	return NULL;
 }
 
+static char *test_set_has_count() {
+	Set set = set_create(sizeof(int), &hash_int, &cmp_int);
+
+	for (int i = 1; i < 10; i++) {
+		set_add(set, &i);
+		assert(set_count(set) == (size_t)i, "bad count");
+	}
+
+	set_destroy(set);
+	return NULL;
+}
+
 int main(void) {
 	run_test(test_set_add_item);
 	run_test(test_set_does_not_contain);
 	run_test(test_set_add_no_duplicates);
+	run_test(test_set_has_count);
 	return 0;
 }
