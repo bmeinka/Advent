@@ -40,17 +40,14 @@ static char *test_set_does_not_contain() {
 }
 
 static char *test_set_add_no_duplicates() {
-	int i, j, k;
+	int i, j;
 	i = j = 33;
-	k = 34;
 	Set set = set_create(sizeof(int), &hash_int, &cmp_int);
 
 	set_add(set, &i);
 	assert(set_count(set) == 1, "adding item did not increase count");
 	set_add(set, &j);
 	assert(set_count(set) == 1, "re-adding item changed count");
-	set_add(set, &k);
-	assert(set_count(set) == 2, "adding item did not increase count");
 
 	set_destroy(set);
 	return NULL;
