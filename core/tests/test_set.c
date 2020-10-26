@@ -65,10 +65,54 @@ static char *test_set_has_count() {
 	return NULL;
 }
 
+static char * test_set_union() {
+	int i;
+	Set a = set_create(sizeof(int), &hash_int, &cmp_int);
+	Set b = set_create(sizeof(int), &hash_int, &cmp_int);
+
+	i = 33;
+	set_add(a, &i);
+	i = 34;
+	set_add(a, &i);
+	set_add(b, &i);
+	i = 35;
+	set_add(b, &i);
+	Set c = set_union(a, b);
+
+	assert(set_count(c) == 3, "union has wrong count");
+	i = 33;
+	assert(set_contains(c, &i), "union missing value");
+	i = 34;
+	assert(set_contains(c, &i), "union missing value");
+	i = 35;
+	assert(set_contains(c, &i), "union missing value");
+
+	set_destroy(a);
+	set_destroy(b);
+	set_destroy(c);
+
+	return NULL;
+}
+
+static char *test_set_union_bad_size_returns_null() {
+	Set a = set_create(4, &hash_int, &cmp_int);
+	Set b = set_create(2, &hash_int, &cmp_int);
+	Set c = set_union(a, b);
+
+	assert(c == NULL, "invalid union created");
+
+	set_destroy(a);
+	set_destroy(b);
+
+	return NULL;
+}
+
 int main(void) {
 	run_test(test_set_add_item);
 	run_test(test_set_does_not_contain);
 	run_test(test_set_add_no_duplicates);
 	run_test(test_set_has_count);
+	run_test(test_set_union);
+	run_test(test_set_union_bad_size_returns_null);
 	return 0;
 }

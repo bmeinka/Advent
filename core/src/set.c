@@ -87,3 +87,28 @@ bool set_contains(Set set, void *item) {
 size_t set_count(Set set) {
 	return set->count;
 }
+
+Set set_union(Set a, Set b) {
+	if (a->item_size != b->item_size) return NULL;
+
+	Set set = set_create(a->item_size, a->hash, a->cmp);
+	if (!set) return NULL;
+
+	for (size_t i = 0; i < 1; i++) {
+		struct set_node *head = a->buckets[i];
+		while (head) {
+			if (head->item)
+				set_add(set, head->item);
+			head = head->next;
+		}
+	}
+	for (size_t i = 0; i < 1; i++) {
+		struct set_node *head = b->buckets[i];
+		while (head) {
+			if (head->item)
+				set_add(set, head->item);
+			head = head->next;
+		}
+	}
+	return set;
+}

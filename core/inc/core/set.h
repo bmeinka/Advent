@@ -57,4 +57,14 @@ bool set_contains(Set set, void *item);
  */
 size_t set_count(Set set);
 
+/*
+ * create a new set with all items from both given sets
+ *
+ * both given sets must have the same item size. the hash and compare
+ * functions will be taken from set a.
+ *
+ * returns a new set, or null if something goes wrong.
+ */
+Set set_union(Set a, Set b);
+
 #endif
