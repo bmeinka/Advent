@@ -21,7 +21,6 @@ struct set {
 
 static size_t get_bucket_index(Set set, void *item) {
 	uint64_t hash = set->hash(item) * golden_ratio;
-	// TODO: multiply by golden ratio
 	return hash >> (64 - set->bits);
 }
 
