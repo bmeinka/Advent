@@ -2,6 +2,9 @@
 #include <core/set.h>
 #include <string.h>
 
+// 2^64 / phi
+const uint64_t golden_ratio = 11400714819323197439U;
+
 struct set_node {
 	void *item;
 	struct set_node *next;
@@ -17,9 +20,9 @@ struct set {
 };
 
 static size_t get_bucket_index(Set set, void *item) {
-	(void)item;
-	(void)set;
-	return 0;
+	uint64_t hash = set->hash(item) * golden_ratio;
+	// TODO: multiply by golden ratio
+	return hash >> (64 - set->bits);
 }
 
 Set set_create(size_t item_size, HashFn hash, CmpFn cmp) {
@@ -28,12 +31,13 @@ Set set_create(size_t item_size, HashFn hash, CmpFn cmp) {
 	set->item_size = item_size;
 	set->hash = hash;
 	set->cmp = cmp;
-	set->buckets = calloc(1, sizeof(struct set_node *));
+	set->bits = 8;
+	set->buckets = calloc(1 << 8, sizeof(struct set_node *));
 	return set;
 }
 
 void set_destroy(Set set) {
-	for (size_t i = 0; i < 1; i++) {
+	for (size_t i = 0; i < 1 << set->bits; i++) {
 		struct set_node *head = set->buckets[i];
 		while (head) {
 			if (head->item)
@@ -94,7 +98,7 @@ Set set_union(Set a, Set b) {
 	Set set = set_create(a->item_size, a->hash, a->cmp);
 	if (!set) return NULL;
 
-	for (size_t i = 0; i < 1; i++) {
+	for (size_t i = 0; i < 1 << a->bits; i++) {
 		struct set_node *head = a->buckets[i];
 		while (head) {
 			if (head->item)
@@ -102,7 +106,7 @@ Set set_union(Set a, Set b) {
 			head = head->next;
 		}
 	}
-	for (size_t i = 0; i < 1; i++) {
+	for (size_t i = 0; i < 1 << b->bits; i++) {
 		struct set_node *head = b->buckets[i];
 		while (head) {
 			if (head->item)
